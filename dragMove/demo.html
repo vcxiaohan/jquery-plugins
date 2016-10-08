@@ -148,6 +148,10 @@
                         oWidth = $p.outerWidth(),    
                         oHeight = $p.outerHeight();  
                     
+                    $p.css({
+                        width: oWidth,    
+                        height: oHeight  
+                    });
                     if(+$p.attr('DR_replace')) {// 拖动交换
                         window.DR_replace = true;
                         // 占位  
@@ -280,7 +284,7 @@
 
         // 添加第一组
         $('.aBtn').on('click', function() {
-            var $div = $('<div class="aa" DR_drag="1" DR_replace="1">111 <img src="images/send.png"> <i class="drag"></i></div>').addClass('DR_mid');
+            var $div = $('<div class="aa" dr_drag="1" dr_replace="1"><p>'+ parseInt(Math.random()*100) +'</p><img src="images/send.png"> <i class="drag"></i></div>').addClass('DR_mid');
             $('.a').append($div);
         });
         // 减少第一组
