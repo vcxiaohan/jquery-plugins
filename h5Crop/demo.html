@@ -7,7 +7,7 @@
     <meta http-equiv=”X-UA-Compatible” content=”IE=edge,chrome=1″/>      
     <script src="http://v3.faqrobot.org/hvb/com/js/jquery-1.11.3.min.js"></script>    
     <script src="http://v3.faqrobot.org/hvb/com/js/base.js"></script>    
-    <title>test</title>      
+    <title>h5Crop</title>      
       
     <style>      
         * {      
@@ -21,7 +21,120 @@
         body {      
             height: 3rem;      
         }      
-    
+        .CR_select {
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        .CR_wholeCtn {
+            display: none;
+            position: fixed;
+            width: 400px;
+            height: 300px;
+        }
+
+        .CR_topCtn {
+            width: 100%;
+            height: 20px;
+            background: blue;
+            position: relative;
+        }
+
+        .CR_midCtn {
+            width: 100%;
+            background: yellow;
+            position: relative;
+            margin: 0 auto;
+        }
+
+        .CR_midLeftCtn {
+            width: 80%;
+            height: 100%;
+            position: absolute;
+            left: 0;
+        }
+
+        .CR_imgCtn {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+        }
+
+        .CR_img {
+            max-width: 100%;
+            max-height: 100%;
+        }
+
+        .CR_dragCtn {
+            outline: 1px solid #0A7CCA;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+        }
+
+        .CR_move {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            cursor: move;
+        }
+
+        .CR_drag {
+            display: inline-block;
+            background: #0A7CCA;
+            width: 6px;
+            height: 6px;
+            position: absolute;
+        }
+
+        .CR_drag1 {
+            top: -3px;
+            left: -3px;
+            cursor: nw-resize;
+        }
+
+        .CR_drag2 {
+            top: -3px;
+            right: -3px;
+            cursor: ne-resize;
+        }
+
+        .CR_drag3 {
+            bottom: -3px;
+            right: -3px;
+            cursor: se-resize;
+        }
+
+        .CR_drag4 {
+            bottom: -3px;
+            left: -3px;
+            cursor: sw-resize;
+        }
+
+        .CR_midRightCtn {
+            width: 20%;
+            height: 100%;
+            position: absolute;
+            right: 0;
+        }
+
+        .CR_cav {
+        }
+
+        .CR_btmCtn {
+            width: 100%;
+            height: 20px;
+            background: green;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+        }
     </style>      
 </head>      
 <body>      
@@ -48,12 +161,14 @@
             this.defaults = defaults;
             this.options = $.extend({}, defaults, options);
             this.fileData = [];
-            this.n_w;// 原始宽高
+            this.n_w;// 原始宽高-nature
             this.n_h;
-            this.s_w;// 显示宽高
+            this.s_w;// 显示宽高-show
             this.s_h;
-            this.d_s;// 拖动框宽高
-            this.p_s = 60;// 展示框宽高
+            this.d_s;// 拖动框宽高-drag
+            this.p_s = 60;// 展示框宽高-place
+            this.rate;// 比率
+            this.type;// 拖动的类型 0-移动 1-左上 2-右上 3-右下 4-左下
             this.init();
         }
 
@@ -72,8 +187,7 @@
             },
             // 创建元素
             create: function() {
-                $('<style>.CR_select{-webkit-touch-callout:none;-webkit-user-select:none;-khtml-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none;}.CR_wholeCtn {display: none; position: fixed; width: 400px; height: 300px;outline: 1px solid red;} .CR_topCtn {width: 100%; height: 20px; background: blue; position: relative;} .CR_midCtn {width: 100%; background: yellow; position: relative; margin: 0 auto;} .CR_midLeftCtn {width: 80%; height: 100%; position: absolute; left: 0;} .CR_imgCtn {position: absolute; top: 50%; left: 50%;} .CR_img {max-width: 100%; max-height: 100%;} .CR_dragCtn {outline: 1px solid #0A7CCA; position: absolute; top: 50%; left: 50%;} .CR_move {position: absolute; top: 0; left: 0; width: 100%; height: 100%; cursor: move;} .CR_drag {display: inline-block; background: #0A7CCA; width: 6px; height: 6px; position: absolute;} .CR_drag1 {top: -3px; left: -3px; cursor: nw-resize;} .CR_drag2 {top: -3px; right: -3px; cursor: ne-resize;} .CR_drag3 {bottom: -3px; right: -3px; cursor: se-resize;} .CR_drag4 {bottom: -3px; left: -3px; cursor: sw-resize;} .CR_midRightCtn {width: 20%; height: 100%; position: absolute; right: 0;} .CR_cav {background: red;} .CR_btmCtn {width: 100%; height: 20px; background: green; position: absolute; bottom: 0; left: 0;}</style>').appendTo('head');
-                $('<div class="CR_wholeCtn"><div class="CR_topCtn"><span class="CR_cancel">x</span></div><div class="CR_midCtn"><div class="CR_midLeftCtn"><div class="CR_imgCtn"><img class="CR_img"><div class="CR_dragCtn"><span class="CR_move"></span><span class="CR_drag1 CR_drag"></span><span class="CR_drag2 CR_drag"></span><span class="CR_drag3 CR_drag"></span><span class="CR_drag4 CR_drag"></span></div></div></div><div class="CR_midRightCtn"><canvas class="CR_cav"></canvas></div></div><div class="CR_btmCtn"><span class="CR_ensure">确定</span><span class="CR_cancel">取消</span></div></div>').appendTo('body');
+                $('<div class="CR_wholeCtn"><div class="CR_topCtn"><span class="CR_cancel">x</span></div><div class="CR_midCtn"><div class="CR_midLeftCtn"><div class="CR_imgCtn"><img class="CR_img"><div class="CR_dragCtn"><span class="CR_move CR_drag0"></span><span class="CR_drag1 CR_drag"></span><span class="CR_drag2 CR_drag"></span><span class="CR_drag3 CR_drag"></span><span class="CR_drag4 CR_drag"></span></div></div></div><div class="CR_midRightCtn"><canvas class="CR_cav"></canvas></div></div><div class="CR_btmCtn"><span class="CR_ensure">确定</span><span class="CR_cancel">取消</span></div></div>').appendTo('body');
             },
             // 设置
             set: function() {
@@ -106,54 +220,84 @@
                 }); 
 
                 // 拖动
-                $(document).on('mousedown.CR', '.CR_move', function(e) {
-                    var posX = $(this).parent().position().left,// inner左上点相对outer左上点的位置    
-                        posY = $(this).parent().position().top,    
-                        _mouseX = e.clientX,// 老鼠标位置    
-                        _mouseY = e.clientY;    
+                $(document).on('mousedown.CR', '.CR_dragCtn', function(e) {
+                    // 拖动类型
+                    This.type = e.target.className.match(/\d+/);
+                    if(This.type) {
+                        This.type = +This.type[0];
+                    }else {
+                        return;
+                    }
 
-                    $('body').addClass('CR_select');    
-                    $('.CR_dragCtn').css({    
-                        'left': posX,    
-                        'top': posY
-                    });  
-      
+                    switch(This.type) {
+                        case 0:
+                            var posX = $(e.target).parent().position().left,// inner左上点相对outer左上点的位置    
+                                posY = $(e.target).parent().position().top,    
+                                _mouseX = e.clientX,// 老鼠标位置    
+                                _mouseY = e.clientY;    
+
+                            $('body').addClass('CR_select');    
+                            $('.CR_dragCtn').css({    
+                                'left': posX,    
+                                'top': posY
+                            });
+                            break;
+                        default:
+                            var posX = $(e.target).parent().position().left,// inner左上点相对outer左上点的位置    
+                                posY = $(e.target).parent().position().top,    
+                                _mouseX = e.clientX,// 老鼠标位置    
+                                _mouseY = e.clientY; 
+                            $('body').addClass('CR_select');    
+                    }
                     $(document).on('mousemove.CR', function(e) {  
-                        mouseX = e.clientX;    
-                        mouseY = e.clientY;    
-        
-                        var diffX = posX + mouseX - _mouseX,    
-                            diffY = posY + mouseY - _mouseY, 
-                            maxW = $('.CR_imgCtn').width() - $('.CR_dragCtn').width() + This.d_s/2,  
-                            maxH = $('.CR_imgCtn').height() - $('.CR_dragCtn').height() + This.d_s/2;    
-        
-                        // 限制范围    
-                        if(diffX <= This.d_s/2) {    
-                            diffX = This.d_s/2;    
-                        }    
-                        if(diffX >= maxW) {    
-                            diffX = maxW;    
-                        }    
-                        if(diffY <= This.d_s/2) {    
-                            diffY = This.d_s/2;    
-                        }    
-                        if(diffY >= maxH) {    
-                            diffY = maxH;    
-                        }    
-        
-                        $('.CR_dragCtn').css({
-                            'left': diffX, 
-                            'top': diffY
-                        });  
-                    });  
+                        var mouseX = e.clientX,
+                            mouseY = e.clientY;   
+
+                        switch(This.type) {
+                            case 0:// 拖动
+                                var diffX = posX + mouseX - _mouseX,    
+                                    diffY = posY + mouseY - _mouseY, 
+                                    maxW = $('.CR_imgCtn').width() - $('.CR_dragCtn').width() + This.d_s/2,  
+                                    maxH = $('.CR_imgCtn').height() - $('.CR_dragCtn').height() + This.d_s/2;    
+                                
+                                // 限制范围    
+                                if(diffX <= This.d_s/2) {    
+                                    diffX = This.d_s/2;    
+                                }    
+                                if(diffX >= maxW) {    
+                                    diffX = maxW;    
+                                }    
+                                if(diffY <= This.d_s/2) {    
+                                    diffY = This.d_s/2;    
+                                }    
+                                if(diffY >= maxH) {    
+                                    diffY = maxH;    
+                                }    
+                                
+                                $('.CR_dragCtn').css({
+                                    'left': diffX, 
+                                    'top': diffY
+                                }); 
+                                break;
+                            case 1:// 左上
+                                var diffX = mouseX - _mouseX;
+                                $('.CR_dragCtn').css({
+                                    'width': This.d_s-diffX,
+                                    'height': This.d_s-diffX,
+                                    'left': posX + diffX, 
+                                    'top': posY + diffX
+                                }); 
+                                break;
+                        }
+                         
+                    });
                 });  
       
                 $(document).on('mouseup.CR', function() {  
                     $('body').removeClass('DR_select');  
                     $(document).off('mousemove.CR'); 
-                    if(This.img) {
-                        //This.ctx.drawImage(This.img, 0, 0, This.d_s, This.d_s, $('.CR_dragCtn').position().left, $('.CR_dragCtn').position().top, This.n_w, This.n_h);//img转换为canvas  
-                    }
+                    This.crop();
+                    This.d_s = $('.CR_dragCtn').width();
                 });
             },
             // 预览
@@ -192,6 +336,8 @@
                                         This.s_h = This.n_h*c_w/This.n_w;
                                     }
                                 }
+                                // 宽高比
+                                This.rate = This.n_w/This.s_w;
                                 $('.CR_imgCtn').css({
                                     'width': This.s_w,
                                     'height': This.s_h,
@@ -209,11 +355,17 @@
                                 
                             }
                             This.img.src = e.target.result;
-                            //This.ctx.drawImage(This.img, 0, 0);//img转换为canvas  
-                            This.ctx.clearRect(0, 0, 100, 100);
+                            This.ctx.drawImage(This.img, 0, 0);//img转换为canvas  
                         }    
                     }else {}    
                 }catch(e) {}
+            },
+            // 裁剪
+            crop: function() {
+                if(this.img) {
+                    this.ctx.clearRect(0, 0, 100, 100);
+                    this.ctx.drawImage(this.img, ($('.CR_dragCtn').position().left-this.d_s/2)*this.rate, ($('.CR_dragCtn').position().top-this.d_s/2)*this.rate, this.d_s*this.rate, this.d_s*this.rate, 0, 0, this.p_s, this.p_s);//[图片资源, 开始剪切的 x 坐标位置, 开始剪切的 y 坐标位置, 被剪切图像的宽度, 被剪切图像的高度, 在画布上放置图像的 x 坐标位置, 在画布上放置图像的 y 坐标位置, 要使用的图像的宽度, 要使用的图像的高度] 
+                }
             }
             
         }
