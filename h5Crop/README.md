@@ -1,4 +1,4 @@
-#### dragMove说明文档
+#### h5Crop说明文档
 
 * ###### demo示例
 	[http://rszhang.faqrobot.net/jquery-plugins/h5Crop/demo.html](http://rszhang.faqrobot.net/jquery-plugins/h5Crop/demo.html)
