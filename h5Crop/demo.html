@@ -363,7 +363,7 @@
             // 裁剪
             crop: function() {
                 if(this.img) {
-                    this.ctx.clearRect(0, 0, 100, 100);
+                    this.ctx.clearRect(0, 0, this.p_s, this.p_s);
                     this.ctx.drawImage(this.img, ($('.CR_dragCtn').position().left-this.d_s/2)*this.rate, ($('.CR_dragCtn').position().top-this.d_s/2)*this.rate, this.d_s*this.rate, this.d_s*this.rate, 0, 0, this.p_s, this.p_s);//[图片资源, 开始剪切的 x 坐标位置, 开始剪切的 y 坐标位置, 被剪切图像的宽度, 被剪切图像的高度, 在画布上放置图像的 x 坐标位置, 在画布上放置图像的 y 坐标位置, 要使用的图像的宽度, 要使用的图像的高度] 
                 }
             }
