@@ -166,7 +166,8 @@
             this.s_w;// 显示宽高-show
             this.s_h;
             this.d_s;// 拖动框宽高-drag
-            this.p_s = 60;// 展示框宽高-place
+            this.p_s = 60;// 展示框临界宽高-place
+            this.g_s = 10;// 最大放大镜宽高-large
             this.m_s = 10;// 最小放大镜宽高-small
             this.rate;// 比率
             this.type;// 拖动的类型 0-移动 1-左上 2-右上 3-右下 4-左下
@@ -222,6 +223,8 @@
 
                 // 拖动
                 $(document).on('mousedown.CR', '.CR_dragCtn', function(e) {
+                    var size = This.d_s;
+
                     // 拖动类型
                     This.type = e.target.className.match(/\d+/);
                     if(This.type) {
@@ -284,27 +287,28 @@
                                 break;
                             case 1:// 左上
                                 var diffX = mouseX - _mouseX,
-                                    size = This.d_s-diffX,
                                     left = posX + diffX,
                                     top = posY + diffX;
-                                // 限制缩放范围  
-                                if(size <= This.m_s) {
-                                    size = This.m_s;
-                                }
-                                if(size >= Math.min(This.s_w, This.s_h)) {
-                                    size = Math.min(This.s_w, This.s_h);
-                                }
-                                if(left <= 0) {
-                                    left = 0;
-                                }
-                                if(left >= This.s_w-This.m_s) {
-                                    left = This.s_w-This.m_s;
-                                }
-                                if(top <= 0) {
-                                    top = 0;
-                                }
-                                if(top >= This.s_h-This.m_s) {
-                                    top = This.s_h-This.m_s;
+                                
+                                if(This.n_w <= This.n_h) {// 宽<高
+                                    if(left>=0 && top>=0) {
+                                        if(size >= This.m_s) {
+                                            size = This.d_s - diffX;
+                                        }else {
+                                            size = This.m_s;
+                                        }
+                                    }else {
+
+                                    }
+                                    if(left<=0) {
+                                        left = 0;
+                                    }
+                                    if(top<=0) {
+                                        top = 0;
+                                    }
+
+                                }else {// 宽>高
+                                    
                                 }
                                 $('.CR_dragCtn').css({
                                     'width': size,
@@ -314,38 +318,7 @@
                                 });
                                 break;
                             case 2:// 右上
-                                var diffX = mouseX - _mouseX,
-                                    size = This.d_s+diffX,
-                                    left = posX,
-                                    top = posY - diffX;
-                                // 限制缩放范围  
-                                if(size <= This.m_s) {
-                                    size = This.m_s;
-                                    left = posX + diffX;
-                                }
-                                if(size >= Math.min(This.s_w, This.s_h)) {
-                                    size = Math.min(This.s_w, This.s_h);
-                                }
-                                if(left <= 0) {
-                                    left = 0;
-                                }
-                                if(left+size >= This.s_w) {
-                                    console.log(123)
-                                    left = -This.s_w+size;
-                                    //size = This.m_s + diffX;
-                                }
-                                if(top <= 0) {
-                                    top = 0;
-                                }
-                                if(top >= This.s_h-This.m_s) {
-                                    top = This.s_h-This.m_s;
-                                }
-                                $('.CR_dragCtn').css({
-                                    'width': size,
-                                    'height': size,
-                                    'left': left, 
-                                    'top': top
-                                });
+
                                 break;
                         }
                          __mouseX = mouseX;
@@ -398,6 +371,7 @@
                                 }
                                 // 宽高比
                                 This.rate = This.n_w/This.s_w;
+                                This.g_s = Math.max(This.s_w, This.s_h);
                                 $('.CR_imgCtn').css({
                                     'width': This.s_w,
                                     'height': This.s_h,

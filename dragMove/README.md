@@ -1,7 +1,7 @@
 #### dragMove说明文档
 
 * ###### demo示例
-	[http://rszhang.faqrobot.net/jquery-plugins/dragMove/demo.html](http://rszhang.faqrobot.net/jquery-plugins/dragMove/demo.html)
+	[http://rsz.douku.tv/jquery-plugins/dragMove/demo.html](http://rsz.douku.tv/jquery-plugins/dragMove/demo.html)
 
 * ###### 功能简介
 	1. 该 *demo* 已包含插件本身和使用示例，您也可以将插件单独抽出，引用使用
@@ -17,8 +17,9 @@
     	
 * ###### 使用说明
 	1. 内部名词解释
-		* 类名 *DR_drag* 是用来分组的，是我们主动拖动的子元素
-		* 类名 *DR_replace* (0-单纯拖动 1-交换位置) 是用来识别当前元素是否可与同组内元素交换位置
+		* 类名 *DR_drag* 是用来分组的，是我们主动拖动的子元素-必需
+		* 类名 *DR_replace* (0-单纯拖动-非必需 1-交换位置-必需) 是用来识别当前元素是否可与同组内元素交换位置
+		* 类名 *drag* 是我们拖动的子元素，可配置-必需
 	2. 调用示例  
 
 			$('body').dragMove({  

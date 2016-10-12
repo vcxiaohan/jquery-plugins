@@ -6,5 +6,5 @@ gulp.task('browserSync', function() {
         server: "./"
     });
 
-    gulp.watch('**/*.html').on('change', browserSync.reload);
+    gulp.watch(['**/*', '**/**/*']).on('change', browserSync.reload);
 });
