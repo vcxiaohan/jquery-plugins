@@ -1,0 +1,452 @@
+<!DOCTYPE html>      
+<html lang="en">      
+<head>      
+    <meta charset="UTF-8">      
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">      
+    <link rel="shortcut icon" href="images/send.png" type="/image/x-icon">      
+    <meta http-equiv=”X-UA-Compatible” content=”IE=edge,chrome=1″/>      
+    <script src="http://v3.faqrobot.org/hvb/com/js/jquery-1.11.3.min.js"></script>    
+    <script src="http://v3.faqrobot.org/hvb/com/js/base.js"></script>    
+    <title>h5Crop</title>      
+      
+    <style>      
+        * {      
+            margin: 0;       
+            padding: 0;      
+        }      
+        body, html {      
+            width: 100%;      
+            height: 100%;      
+        }      
+        body {      
+            height: 3rem;      
+        }      
+        .CR_select {
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            -khtml-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        .CR_wholeCtn {
+            display: none;
+            position: fixed;
+            width: 400px;
+            height: 300px;
+        }
+
+        .CR_topCtn {
+            width: 100%;
+            height: 20px;
+            background: blue;
+            position: relative;
+        }
+
+        .CR_midCtn {
+            width: 100%;
+            background: yellow;
+            position: relative;
+            margin: 0 auto;
+        }
+
+        .CR_midLeftCtn {
+            width: 80%;
+            height: 100%;
+            position: absolute;
+            left: 0;
+        }
+
+        .CR_imgCtn {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+        }
+
+        .CR_img {
+            max-width: 100%;
+            max-height: 100%;
+        }
+
+        .CR_dragCtn {
+            outline: 1px solid #0A7CCA;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+        }
+
+        .CR_move {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            cursor: move;
+        }
+
+        .CR_drag {
+            display: inline-block;
+            background: #0A7CCA;
+            width: 6px;
+            height: 6px;
+            position: absolute;
+        }
+
+        .CR_drag1 {
+            top: -3px;
+            left: -3px;
+            cursor: nw-resize;
+        }
+
+        .CR_drag2 {
+            top: -3px;
+            right: -3px;
+            cursor: ne-resize;
+        }
+
+        .CR_drag3 {
+            bottom: -3px;
+            right: -3px;
+            cursor: se-resize;
+        }
+
+        .CR_drag4 {
+            bottom: -3px;
+            left: -3px;
+            cursor: sw-resize;
+        }
+
+        .CR_midRightCtn {
+            width: 20%;
+            height: 100%;
+            position: absolute;
+            right: 0;
+        }
+
+        .CR_cav {
+        }
+
+        .CR_btmCtn {
+            width: 100%;
+            height: 20px;
+            background: green;
+            position: absolute;
+            bottom: 0;
+            left: 0;
+        }
+    </style>      
+</head>      
+<body>      
+    <input type="file" class="file" multiple="multiple"> 
+</body>      
+<script>      
+    /**
+    * jquery.h5Crop.js
+    * 
+    * Copyright (c) 2016/10/9 Han Wenbo
+    *
+    **/
+
+    ;(function($, window, document, undefined) {
+        var plugName = "h5Crop",
+            defaults = {
+                url: '',
+                params: {},
+            };
+        
+        function H5Crop($el, options) {
+            this.plugName = plugName;
+            this.$el = $el;
+            this.defaults = defaults;
+            this.options = $.extend({}, defaults, options);
+            this.fileData = [];
+            this.n_w;// 原始宽高-nature
+            this.n_h;
+            this.s_w;// 显示宽高-show
+            this.s_h;
+            this.d_s;// 拖动框宽高-drag
+            this.p_s = 60;// 展示框宽高-place
+            this.m_s = 10;// 最小放大镜宽高-small
+            this.rate;// 比率
+            this.type;// 拖动的类型 0-移动 1-左上 2-右上 3-右下 4-左下
+            this.init();
+        }
+
+        H5Crop.prototype = {
+            init: function() {
+                this.events();// 事件
+                this.create();// 创建元素
+                this.set();// 设置
+                /*var This = this;
+                Base.request({ 
+                    url: This.options.url,
+                    params: This.options.params, 
+                    callback: function(data) { 
+                    }, 
+                });*/
+            },
+            // 创建元素
+            create: function() {
+                $('<div class="CR_wholeCtn"><div class="CR_topCtn"><span class="CR_cancel">x</span></div><div class="CR_midCtn"><div class="CR_midLeftCtn"><div class="CR_imgCtn"><img class="CR_img"><div class="CR_dragCtn"><span class="CR_move CR_drag0"></span><span class="CR_drag1 CR_drag"></span><span class="CR_drag2 CR_drag"></span><span class="CR_drag3 CR_drag"></span><span class="CR_drag4 CR_drag"></span></div></div></div><div class="CR_midRightCtn"><canvas class="CR_cav"></canvas></div></div><div class="CR_btmCtn"><span class="CR_ensure">确定</span><span class="CR_cancel">取消</span></div></div>').appendTo('body');
+            },
+            // 设置
+            set: function() {
+                $('.CR_midCtn').css({
+                    'width': $('.CR_wholeCtn').width(),
+                    'height': $('.CR_wholeCtn').height() - $('.CR_topCtn').height() - $('.CR_btmCtn').height()
+                });
+                $('.CR_cav').attr({
+                    'width': this.p_s,
+                    'height': this.p_s
+                });
+                
+
+                this.cav = $('.CR_cav')[0];  
+                this.ctx = this.cav.getContext('2d');
+            },
+            // 事件
+            events: function() {
+                var This = this;
+                // 选择文件
+                This.$el.on('change.CR', function() {      
+                    This.fileData = [];    
+                    try {  
+                        for(var i=0,len = This.$el[0].files.length; i<len; i++) {//IE9-不支持files      
+                            This.fileData[i] = This.$el[0].files[i];    
+                        }    
+                        This.preview();
+                    }catch(e) {}  
+                        
+                }); 
+
+                // 拖动
+                $(document).on('mousedown.CR', '.CR_dragCtn', function(e) {
+                    // 拖动类型
+                    This.type = e.target.className.match(/\d+/);
+                    if(This.type) {
+                        This.type = +This.type[0];
+                    }else {
+                        return;
+                    }
+
+                    switch(This.type) {
+                        case 0:
+                            var posX = $(e.target).parent().position().left,// inner左上点相对outer左上点的位置    
+                                posY = $(e.target).parent().position().top,    
+                                _mouseX = e.clientX,// 老鼠标位置    
+                                _mouseY = e.clientY;    
+
+                            $('body').addClass('CR_select');    
+                            $('.CR_dragCtn').css({    
+                                'left': posX,    
+                                'top': posY
+                            });
+                            break;
+                        default:
+                            var posX = $(e.target).parent().position().left,// inner左上点相对outer左上点的位置    
+                                posY = $(e.target).parent().position().top,    
+                                _mouseX = e.clientX,// 老鼠标位置    
+                                _mouseY = e.clientY, 
+                                __mouseX = e.clientX,// 瞬时老鼠标位置    
+                                __mouseY = e.clientY;// 瞬时老鼠标位置    
+                            $('body').addClass('CR_select');    
+                    }
+                    $(document).on('mousemove.CR', function(e) {  
+                        var mouseX = e.clientX,
+                            mouseY = e.clientY;   
+
+                        switch(This.type) {
+                            case 0:// 拖动
+                                var diffX = posX + mouseX - _mouseX,    
+                                    diffY = posY + mouseY - _mouseY, 
+                                    maxW = $('.CR_imgCtn').width() - $('.CR_dragCtn').width(),  
+                                    maxH = $('.CR_imgCtn').height() - $('.CR_dragCtn').height();    
+                                
+                                // 限制拖动范围    
+                                if(diffX <= 0) {    
+                                    diffX = 0;    
+                                }    
+                                if(diffX >= maxW) {    
+                                    diffX = maxW;    
+                                }    
+                                if(diffY <= 0) {    
+                                    diffY = 0;    
+                                }    
+                                if(diffY >= maxH) {    
+                                    diffY = maxH;    
+                                }    
+                                
+                                $('.CR_dragCtn').css({
+                                    'left': diffX, 
+                                    'top': diffY
+                                }); 
+                                break;
+                            case 1:// 左上
+                                var diffX = mouseX - _mouseX,
+                                    size = This.d_s-diffX,
+                                    left = posX + diffX,
+                                    top = posY + diffX;
+                                // 限制缩放范围  
+                                if(size <= This.m_s) {
+                                    size = This.m_s;
+                                }
+                                if(size >= Math.min(This.s_w, This.s_h)) {
+                                    size = Math.min(This.s_w, This.s_h);
+                                }
+                                if(left <= 0) {
+                                    left = 0;
+                                }
+                                if(left >= This.s_w-This.m_s) {
+                                    left = This.s_w-This.m_s;
+                                }
+                                if(top <= 0) {
+                                    top = 0;
+                                }
+                                if(top >= This.s_h-This.m_s) {
+                                    top = This.s_h-This.m_s;
+                                }
+                                $('.CR_dragCtn').css({
+                                    'width': size,
+                                    'height': size,
+                                    'left': left, 
+                                    'top': top
+                                });
+                                break;
+                            case 2:// 右上
+                                var diffX = mouseX - _mouseX,
+                                    size = This.d_s+diffX,
+                                    left = posX,
+                                    top = posY - diffX;
+                                // 限制缩放范围  
+                                if(size <= This.m_s) {
+                                    size = This.m_s;
+                                    left = posX + diffX;
+                                }
+                                if(size >= Math.min(This.s_w, This.s_h)) {
+                                    size = Math.min(This.s_w, This.s_h);
+                                }
+                                if(left <= 0) {
+                                    left = 0;
+                                }
+                                if(left+size >= This.s_w) {
+                                    console.log(123)
+                                    left = -This.s_w+size;
+                                    //size = This.m_s + diffX;
+                                }
+                                if(top <= 0) {
+                                    top = 0;
+                                }
+                                if(top >= This.s_h-This.m_s) {
+                                    top = This.s_h-This.m_s;
+                                }
+                                $('.CR_dragCtn').css({
+                                    'width': size,
+                                    'height': size,
+                                    'left': left, 
+                                    'top': top
+                                });
+                                break;
+                        }
+                         __mouseX = mouseX;
+                         __mouseY = mouseY;
+                    });
+                });  
+      
+                $(document).on('mouseup.CR', function() {  
+                    $('body').removeClass('DR_select');  
+                    $(document).off('mousemove.CR'); 
+                    This.d_s = $('.CR_dragCtn').width();
+                    This.crop();
+                });
+            },
+            // 预览
+            preview: function() {
+                var This = this;
+                try {    
+                    $('.CR_wholeCtn').show();
+                    var reader = new FileReader();//IE9-不支持FileReader    
+                    if(This.fileData[0].type.indexOf('image')+1) {//可预览    
+                        reader.readAsDataURL(This.fileData[0]);    
+                        reader.onload = function(e) {   
+                            $('.CR_img').attr('src', e.target.result);
+                            This.img = new Image();  
+                            This.img.onload = function() {  
+                                // 原始宽高
+                                This.n_w = This.img.width;
+                                This.n_h = This.img.height;
+                                var c_w = $('.CR_midLeftCtn').width(),
+                                    c_h = $('.CR_midLeftCtn').height();
+
+                                // 显示宽高
+                                if(This.n_w <= This.n_h) {// 宽<高
+                                    if(This.n_h <= c_h) {// 比高
+                                        This.s_w = This.n_w;
+                                        This.s_h = This.n_h;
+                                    }else {
+                                        This.s_w = This.n_w*c_h/This.n_h;
+                                        This.s_h = This.n_h<=c_h?This.n_h:c_h;
+                                    }
+                                }else {// 宽>高
+                                    if(This.n_w <= c_w) {
+                                        This.s_w = This.n_w;
+                                        This.s_h = This.n_h;
+                                    }else {
+                                        This.s_w = This.n_w<=c_w?This.n_w:c_w;
+                                        This.s_h = This.n_h*c_w/This.n_w;
+                                    }
+                                }
+                                // 宽高比
+                                This.rate = This.n_w/This.s_w;
+                                $('.CR_imgCtn').css({
+                                    'width': This.s_w,
+                                    'height': This.s_h,
+                                    'margin-left': -This.s_w/2,
+                                    'margin-top': -This.s_h/2
+                                });
+                                This.d_s = This.s_w<=This.s_h?This.s_w:This.s_h;
+                                This.d_s = This.d_s-30<=50?This.d_s:This.d_s-30;
+                                $('.CR_dragCtn').css({
+                                    'width': This.d_s,
+                                    'height': This.d_s,
+                                    'left': This.s_w/2-This.d_s/2,
+                                    'top': This.s_h/2-This.d_s/2
+                                });
+                                
+                            }
+                            This.img.src = e.target.result;
+                            This.ctx.drawImage(This.img, 0, 0);//img转换为canvas  
+                        }    
+                    }else {}    
+                }catch(e) {}
+            },
+            // 裁剪
+            crop: function() {
+                if(this.img) {
+                    this.ctx.clearRect(0, 0, this.p_s, this.p_s);
+                    this.ctx.drawImage(this.img, $('.CR_dragCtn').position().left*this.rate, $('.CR_dragCtn').position().top*this.rate, this.d_s*this.rate, this.d_s*this.rate, 0, 0, this.p_s, this.p_s);//[图片资源, 开始剪切的 x 坐标位置, 开始剪切的 y 坐标位置, 被剪切图像的宽度, 被剪切图像的高度, 在画布上放置图像的 x 坐标位置, 在画布上放置图像的 y 坐标位置, 要使用的图像的宽度, 要使用的图像的高度] 
+                }
+            }
+            
+        }
+
+        $.fn.extend({
+            h5Crop: function(options) {
+                return new H5Crop($(this), options);
+            }
+        })
+    })($, window, document);
+
+</script>      
+    
+<script>    
+    ;$(function() {      
+        $('[type=file]').h5Crop({
+            url: 'MaterialNoAuth/doSaveScreenPic',
+            params: {
+                picData: '',
+            }
+        });
+    });    
+</script>    
+</html>
