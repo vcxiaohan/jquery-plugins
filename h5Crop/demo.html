@@ -167,8 +167,9 @@
             this.s_h;
             this.d_s;// 拖动框宽高-drag
             this.p_s = 60;// 展示框临界宽高-place
-            this.g_s = 10;// 最大放大镜宽高-large
+            this.g_s = 0;// 最大放大镜宽高-large
             this.m_s = 10;// 最小放大镜宽高-small
+            this.shape;// 0-宽<高 1-宽>高
             this.rate;// 比率
             this.type;// 拖动的类型 0-移动 1-左上 2-右上 3-右下 4-左下
             this.init();
@@ -287,28 +288,35 @@
                                 break;
                             case 1:// 左上
                                 var diffX = mouseX - _mouseX,
-                                    left = posX + diffX,
-                                    top = posY + diffX;
+                                    left = $('.CR_dragCtn').position().left,
+                                    top = $('.CR_dragCtn').position().top,
+                                    end;
+                                if(left<=0 || top<=0 || (left+$('.CR_dragCtn').width())>=This.s_w || (top+$('.CR_dragCtn').height())>=This.s_h) {
+                                    end = true;// 到边界
+                                }else {
+                                    end = false;// 未到边界
+                                }
+                                left = posX + diffX;
+                                top = posY + diffX;
+                                if(!end) {
+                                    size = This.d_s - diffX;
+                                }
+                                if(left <= 0) {
+                                    left = 0;
+                                }
+                                if((left+$('.CR_dragCtn').width())>=This.s_w) {
+                                    left = This.s_w-$('.CR_dragCtn').width();
+                                }
+                                if((top+$('.CR_dragCtn').height())>=This.s_h) {
+                                    top = This.s_h-$('.CR_dragCtn').height();
+                                }
                                 
-                                if(This.n_w <= This.n_h) {// 宽<高
-                                    if(left>=0 && top>=0) {
-                                        if(size >= This.m_s) {
-                                            size = This.d_s - diffX;
-                                        }else {
-                                            size = This.m_s;
-                                        }
-                                    }else {
-
-                                    }
-                                    if(left<=0) {
-                                        left = 0;
-                                    }
-                                    if(top<=0) {
-                                        top = 0;
-                                    }
-
-                                }else {// 宽>高
-                                    
+                                if(top <= 0) {
+                                    top = 0;
+                                }
+                                
+                                if(size <= This.m_s) {
+                                    size = This.m_s;
                                 }
                                 $('.CR_dragCtn').css({
                                     'width': size,
@@ -318,7 +326,43 @@
                                 });
                                 break;
                             case 2:// 右上
-
+                                var diffX = mouseX - _mouseX,
+                                    left = $('.CR_dragCtn').position().left,
+                                    top = $('.CR_dragCtn').position().top,
+                                    end;
+                                if(left<=0 || top<=0 || (left+$('.CR_dragCtn').width())>=This.s_w || (top+$('.CR_dragCtn').height())>=This.s_h) {
+                                    end = true;// 到边界
+                                }else {
+                                    end = false;// 未到边界
+                                }
+                                //left = posX + diffX;
+                                top = posY - diffX;
+                                if(!end) {
+                                    size = This.d_s + diffX;
+                                }
+                                if(left <= 0) {
+                                    left = 0;
+                                }
+                                if((left+$('.CR_dragCtn').width())>=This.s_w) {
+                                    left = 0;
+                                }
+                                if((top+$('.CR_dragCtn').height())>=This.s_h) {
+                                    top = 0;
+                                }
+                                
+                                if(top <= 0) {
+                                    top = 0;
+                                }
+                                
+                                if(size <= This.m_s) {
+                                    size = This.m_s;
+                                }
+                                $('.CR_dragCtn').css({
+                                    'width': size,
+                                    'height': size,
+                                    'left': left, 
+                                    'top': top
+                                });
                                 break;
                         }
                          __mouseX = mouseX;
@@ -371,7 +415,8 @@
                                 }
                                 // 宽高比
                                 This.rate = This.n_w/This.s_w;
-                                This.g_s = Math.max(This.s_w, This.s_h);
+                                This.g_s = Math.min(This.s_w, This.s_h);
+                                This.shape = This.s_w<=This.s_h ? 0 : 1;
                                 $('.CR_imgCtn').css({
                                     'width': This.s_w,
                                     'height': This.s_h,
