@@ -1,7 +1,7 @@
 #### scrollbar 说明文档
 
 * ###### demo 示例
-	1. [http://rsz.douku.tv/jquery-plugins/scrollbar/demo.html](http://rsz.douku.tv/jquery-plugins/scrollbar/demo.html)
+	1. [http://v3.faqrobot.org/hvb/jquery-plugins/scrollbar/demo.html](http://v3.faqrobot.org/hvb/jquery-plugins/scrollbar/demo.html)
 	2. 嵌套使用时，有点问题，持续更新中
 
 * ###### 功能简介
