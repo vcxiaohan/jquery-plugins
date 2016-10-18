@@ -1,0 +1,98 @@
+<!DOCTYPE html>  
+<html lang="en">  
+<head>  
+    <meta charset="UTF-8">  
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">  
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>  
+    <script src="../js/jquery-1.11.3.min.js"></script>  
+    <script src="js/autocomplete.js"></script>  
+    <title>demo</title>  
+  
+    <style>  
+        * {  
+            margin: 0;   
+            padding: 0;  
+            font-family: 'Microsoft YaHei';
+        }  
+        body, html {  
+            width: 100%;  
+            height: 100%;  
+            background: #eee;
+        }  
+        .bodyInner {
+        }
+        .demo {
+            width: 300px;
+            position: relative;
+        }
+        .showCtn {
+            width: 100%;
+            height: 300px;
+            background: red;
+        }
+        .showCtn:after {
+            clear: both;
+        }
+        .input {
+            width: 80%;
+            box-sizing: border-box;
+            float: left;
+        }
+        .send {
+            float: left;
+            box-sizing: border-box;
+            display: inline-block;
+            width: 20%;
+        }
+        .explain {
+            float: left;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-top: 20px;
+            padding: 10px;
+        }
+    </style>  
+</head>  
+<body>  
+    <div class="bodyInner">
+        <div class="demo">
+            <div class="showCtn"></div>
+            <div class="inputCtn">
+                <input class="input" type="text">
+                <span class="send">发送</span>
+            </div>
+        </div>
+        <div class="explain">
+            <h3>demo解释</h3>
+            <p>1. 请打开 console 面板</p>
+        </div>
+    </div>
+</body>  
+<script>  
+    ;$(function() {  
+        /* 请忽视这里 */
+        $.ajax({
+            url: 'http://v3.faqrobot.org/servlet/AQ?s=p&sysNum=1000000',
+            dataType: 'jsonp',
+            success: function() {
+                autocomplete();
+            }
+        });
+
+        /* 调用插件 */
+        function autocomplete() {
+            $('.input').autocomplete({
+                prefix: 'http://v3.faqrobot.org/',//[string]
+                url: '../../servlet/AQ?s=ig',//[string]
+                jsonp: true,//是否跨域
+                targetEl: $('.inputCtn'),//参照物(用于appendTo和定位)
+                posAttr: ['0px', '100px'],//外边框的定位[left bottom]
+                itemNum: 10,//[int] 默认全部显示
+                callback: function(data) {//获取文本后的回调函数
+                    $('.send').trigger('click');
+                }
+            });
+        }
+    });  
+</script>  
+</html>
