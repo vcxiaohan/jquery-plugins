@@ -40,22 +40,32 @@
                     mouseY = e.clientY,    
                     oWidth = $p.width(),    
                     oHeight = $p.height();  
-                
-                $p.css({
-                    width: $p.width(),    
-                    height: $p.height()  
-                });
-                if(+$p.attr('DR_replace')) {// 拖动交换
-                    window.DR_replace = true;
-                    // 占位  
-                    $('<i class="DR_holder"></i>').css({    
-                        width: $p.outerWidth(),    
-                        height: $p.outerHeight()    
-                    }).addClass($('[DR_move]')[0].className).insertBefore($('[DR_move]')); 
-                }else {// 单纯拖动
-                    window.DR_replace = false;
-                }
   
+				$p.css({
+					width: oWidth,
+					height: oHeight
+				});
+				if(+$p.attr('DR_replace')) {// 拖动交换
+					window.DR_replace = true;
+					// 占位
+					var holder = null;
+					if($p.get(0).tagName == 'TR') {
+						var tdNum = $p.children().length;
+						holder = $('<tr class="DR_holder" colspan="'+tdNum+'"></tr>').css('display','table-row');
+						for(var i=0; i<tdNum; i++) {
+							holder.append('<td></td>');
+						}
+					} else {
+						holder = $('<i class="DR_holder"></i>').css({
+							width: oWidth,
+							height: oHeight
+						});
+					}
+					holder.addClass($('[DR_move]')[0].className).insertBefore($('[DR_move]'));
+				}else {// 单纯拖动
+					window.DR_replace = false;
+				}
+				
                 $('body').addClass('DR_select');   
                 $('[DR_move]').addClass('DR_maxIndex DR_fixed');
                 if(window.DR_replace) {
