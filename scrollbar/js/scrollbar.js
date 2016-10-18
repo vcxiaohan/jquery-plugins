@@ -45,7 +45,6 @@
 			this.el.borderWidth = parseInt(this.$el.css('borderTopWidth'));
 
 			this.$child = this.$el.children(':not(script):eq(0)');
-			console.log(this.$child);
 			this.child.width = this.$child.width();
 			this.child.height = this.$child.height();
 			this.child.outerWidth = this.$child.outerWidth();
@@ -80,9 +79,10 @@
 				    'right: 2px;'+
 				'}'+
 				'.SC_backClass {/*可配置*/'+
-				    'background: #E3E4E4;'+
+				    'background: #000;'+
+				    'background: rgba(0, 0, 0, 0.4);'+
 				    'width: 2px;'+
-				    'border-radius: 5px;'+
+				    'border-radius: 20px;'+
 				'}'+
 				'.SC_frontCtn {'+
 				    'position: absolute;'+
@@ -90,13 +90,14 @@
 				    'cursor: pointer;'+
 				'}'+
 				'.SC_frontClass {/*可配置*/'+
-				    'background: #B5B5B5;'+
+				    'background: #fff;'+
+				    'background: rgba(255, 255, 255, 0.75);'+
 				    'width: 4px;'+
 				    'height: 30px;'+
 				    'border-radius: 5px;'+
 				'}'+
 				'.SC_frontClass:hover {/*可配置*/'+
-				    'background: #888889';+
+				    'background: rgba(255, 255, 255, 1);';+
 				'}'+
 				'.SC_select_no {'+
 				    '-moz-user-select: none;/*火狐*/'+

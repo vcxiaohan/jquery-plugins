@@ -13,20 +13,34 @@
         * {  
             margin: 0;   
             padding: 0;  
+            font-family: 'Microsoft YaHei';
         }  
         body, html {  
             width: 100%;  
             height: 100%;  
+            background: #eee;
         }  
         .bodyInner {
             height: 1000px;
         }
         .demo {
             float: left;
+            padding: 10px;
         }
         .outer {
             width: 200px;
             height: 300px;
+            border-radius: 5px;
+        }
+        .inner {
+            padding: 10px;
+        }
+        .aOuter {
+            background: #333333;
+            color: #eee;
+        }
+        .bOuter {
+            background: #C2BEB2;
         }
         h3 {
             text-align: center;
@@ -45,6 +59,13 @@
         }
         .customFrontClass:hover {
             background: rgba(0,0,0,0.9);
+        }
+        .explain {
+            float: left;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-top: 20px;
+            padding: 10px;
         }
     </style>  
 </head>  
@@ -95,13 +116,23 @@
         <button class="add">所有demo增加内容</button>
         <button class="toBottom">demo2滚动到底部</button>
         <button class="to250">demo2滚动到250px</button>
+        <div class="explain">
+            <h3>demo解释</h3>
+            <p>1. demo1 是最简单的调用示例</p>
+            <p>2. demo1 内容改变会自动滚动到最底部</p>
+            <p>3. demo2 内容改变不会自动滚动到最底部，且滚动条样式可自定义</p>
+            <p>4. 可设置滚动到固定位置，滚动过程中提供钩子</p>
+            <p>5. 插件可嵌套使用(如：body和demo1、2嵌套使用)</p>
+        </div>
     </div>
 </body>  
 <script>  
     ;$(function() {  
         /* 调用插件 */
 
-        var bodyScrollbar = $('body').scrollbar({});  
+        var bodyScrollbar = $('body').scrollbar({
+            autoBottom: false,//内容改变，是否自动滚动到底部
+        });  
         var aScrollbar = $('.aOuter').scrollbar({});  
         var bScrollbar = $('.bOuter').scrollbar({  
             backClass: 'customBackClass',
