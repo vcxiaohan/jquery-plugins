@@ -183,19 +183,21 @@
     						}else {//0
     							var html = '';
 
-    							if(data.list[0]) {
-    								var len = This.options.itemNum ? (This.options.itemNum>data.list.length?data.list.length:This.options.itemNum) : data.list.length;
-    								for(var i=0; i<len; i++) {
-    									html += '<div class="AU_innerCtn"><div class="AU_txt">'+ (i+1) +'. '+ data.list[i].question +'</div></div>';
+                                if(data.list) {
+                                    if(data.list[0]) {
+                                        var len = This.options.itemNum ? (This.options.itemNum>data.list.length?data.list.length:This.options.itemNum) : data.list.length;
+                                        for(var i=0; i<len; i++) {
+                                            html += '<div class="AU_innerCtn"><div class="AU_txt">'+ (i+1) +'. '+ data.list[i].question +'</div></div>';
 
-    								}
-									This.obj.curIndex = 0.5;//恢复0
-        							This.obj.maxIndex = len-1;//最大index
-    								This.$obj.$AU_outerCtn.empty().append(html).show();
-        							$('.AU_innerCtn').eq(This.obj.curIndex).addClass('AU_innerCtn_focus').siblings().removeClass('AU_innerCtn_focus');
-    							}else {
-    								This.$obj.$AU_outerCtn.empty().hide();
-    							}
+                                        }
+                                        This.obj.curIndex = 0.5;//恢复0
+                                        This.obj.maxIndex = len-1;//最大index
+                                        This.$obj.$AU_outerCtn.empty().append(html).show();
+                                        $('.AU_innerCtn').eq(Math.floor(This.obj.curIndex)).addClass('AU_innerCtn_focus').siblings().removeClass('AU_innerCtn_focus');
+                                    }else {
+                                        This.$obj.$AU_outerCtn.empty().hide();
+                                    }
+                                }
     						}
     					},
     				});
