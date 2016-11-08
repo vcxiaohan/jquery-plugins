@@ -1,0 +1,49 @@
+<!DOCTYPE html>  
+<html lang="en">  
+<head>  
+    <meta charset="UTF-8">  
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">  
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>  
+    <script src="../js/jquery-1.11.3.min.js"></script>  
+    <script src="js/input.js"></script>  
+    <title>demo</title>  
+  
+    <style>  
+        * {  
+            margin: 0;   
+            padding: 0;  
+        }  
+        body, html {  
+            width: 100%;  
+            height: 100%;  
+        }  
+        .IN-wrapCtn {
+            position: relative;
+            display: inline-block;
+        }
+        .IN-placeholder {
+            position: absolute;
+            top: 0;
+            left: 0;
+            color: #aaa;
+        }
+    </style>  
+</head>  
+<body>  
+    <div class="inputCtn">
+        <input class="a" type="text" IN-placeholder="input 示例" IN-maxLength="10">
+        <input class="b" type="text" placeholder="该 input 不调用插件" IN-maxLength="20">
+        <textarea class="c" IN-placeholder="textarea 示例" IN-maxLength="30"></textarea>
+        <textarea class="d" placeholder="该 textarea 不调用插件" IN-maxLength="30"></textarea>
+    </div>
+</body>  
+<script>  
+    ;$(function() {  
+        $('.inputCtn').input({
+            noInput: '.b, .d',// 不使用该插件的元素 
+            maxLengthFormat: '$/$',//  最大字数显示格式
+
+        });
+    });  
+</script>  
+</html>
