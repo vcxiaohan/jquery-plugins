@@ -60,12 +60,21 @@
         .customFrontClass:hover {
             background: rgba(0,0,0,0.9);
         }
-        .explain {
+        .explain, .ctn {
             float: left;
             border: 1px solid #ccc;
             border-radius: 5px;
             margin-top: 20px;
             padding: 10px;
+        }
+        .green {
+            background: green;
+        }
+        .blue {
+            background: blue;
+        }
+        .red {
+            background: red;
         }
     </style>  
 </head>  
@@ -116,6 +125,7 @@
         <button class="add">所有demo增加内容</button>
         <button class="toBottom">demo2滚动到底部</button>
         <button class="to250">demo2滚动到250px</button>
+        <button class="autoScroll">demo2循环滚动</button>
         <div class="explain">
             <h3>demo解释</h3>
             <p>1. demo1 是最简单的调用示例</p>
@@ -124,6 +134,7 @@
             <p>4. 可设置滚动到固定位置，滚动过程中提供钩子</p>
             <p>5. 插件可嵌套使用(如：body和demo1、2嵌套使用)</p>
         </div>
+        <div class="ctn"></div>
     </div>
 </body>  
 <script>  
@@ -138,26 +149,49 @@
             backClass: 'customBackClass',
             frontClass: 'customFrontClass',
             autoBottom: false,//内容改变，是否自动滚动到底部
-            callback: function(curPos, delta) {//滚动时事件回调
-                console.log(curPos, '当前top值为'+ curPos +'px', delta, delta==1?'向下滚':'向上滚');
-            }
+            moveCallback: function(top, direction) {//运动时事件回调
+                $('.ctn').append('<em class="green">---|---</em>运动', top, '当前top值为'+ top +'px', direction, direction==1?'向下滚':'向上滚');
+            },
+            stopCallback: function(top, direction) {//停止时事件回调
+                $('.ctn').append('<em class="blue">---|---</em>停止', top, '当前top值为'+ top +'px', direction, direction==1?'向下滚':'向上滚');
+            },
         });  
 
         /* 事件 */
 
-        // 添加内容
+        // 所有demo增加内容
         $('.add').on('click', function() {
             $('.inner').append('<p>添加的内容</p>');
         });
 
-        // 滚动到底部
+        // demo2滚动到底部
         $('.toBottom').on('click', function() {
             bScrollbar.scrollTo('bottom');
         });
 
-        // 滚动到250px
+        // demo2滚动到250px
         $('.to250').on('click', function() {
             bScrollbar.scrollTo(250);
+        });
+
+        var timer = null;
+        // demo2从当前位置滚动到底部
+        $('.autoScroll').on('click', function() {
+            clearInterval(timer);
+            timer = setInterval(function() {
+                if(bScrollbar.maxScroll > -bScrollbar.curPos) {
+                    bScrollbar.scrollTo(-bScrollbar.curPos+1, true);// true取消滚动缓动效果
+                }else {
+                    if(!window.hasRead) {
+                        window.hasRead = !window.hasRead;
+                        $('.ctn').append('<em class="red">---|---</em>此页内容已浏览完毕，3s后加载下一页内容');
+                        setTimeout(function() {
+                            window.hasRead = !window.hasRead;
+                            bScrollbar.scrollTo('top');
+                        }, 3000)
+                    }
+                }
+            }, 20);
         });
 
         

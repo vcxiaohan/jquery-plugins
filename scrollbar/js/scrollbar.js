@@ -11,7 +11,8 @@
 			backClass: 'SC_backClass',
 			frontClass: 'SC_frontClass',
 			autoBottom: true,//内容改变，是否自动滚动到底部
-			callback: function(curPos, delta) {},//滚动时事件回调
+			moveCallback: function(top, direction) {},//运动时事件回调
+			stopCallback: function(top, direction) {},//停止时事件回调
 		};
 	
 	function Scrollbar($el, options) {
@@ -181,6 +182,7 @@
 						This.$child.stop().animate({'top': '0'}, 300, function() {
 							This.$SC_backCtn.add(This.$SC_frontCtn).fadeOut();
 						});
+						This.options.stopCallback(parseInt(This.$child.css('top')), -1);
 					}else if(childH<=elH-childTop) {
 						if(childH < elH) {//下出现空白
 							This.$child.stop().animate({'top': '0'}, 300, function() {
@@ -191,6 +193,7 @@
 								This.$SC_backCtn.add(This.$SC_frontCtn).fadeOut();
 							});
 						}
+						This.options.stopCallback(parseInt(This.$child.css('top')), 1);
 					}else {//缓动停止
 						clearInterval(touchTimer);
 						touchTimer = setInterval(function() {
@@ -199,10 +202,12 @@
 							if(childTop>=0) {//上出现空白
 								This.$child.css({'top': '0'});
 								clearInterval(touchTimer);
-							}else if(childH<=elH-childTop) {
+								This.options.stopCallback(parseInt(This.$child.css('top')), -1);
+							}else if(childH<=elH-childTop) {//下出现空白
 								This.$child.css({'top': elH-childH});
 								clearInterval(touchTimer);
-							}else {
+								This.options.stopCallback(parseInt(This.$child.css('top')), 1);
+							}else {//运动中
 								if(Math.abs(diffY)>1) {
 									This.$child.css({'top': '+='+ diffY});
 									This.$SC_frontCtn.css({'top': -(This.$child.position().top)/This.ratio});
@@ -211,6 +216,7 @@
 									This.$SC_backCtn.add(This.$SC_frontCtn).fadeOut();
 									clearInterval(touchTimer);
 								}
+								This.options.moveCallback(parseInt(This.$child.css('top')), -diffY<0?-1:1);
 							}
 						}, 20);
 					}
@@ -256,7 +262,7 @@
 						top: -This.curPos/This.ratio,
 					});
 				}
-				This.options.callback(This.curPos, This.delta);
+				This.options.moveCallback(parseInt(This.$child.css('top')), This.delta);
 				return false;
 			});
 
@@ -293,7 +299,7 @@
 					This.$child.css({//div滚动
 						top: -endTop*This.ratio,
 					});
-					This.options.callback(-endTop*This.ratio, diffClientY);
+					This.options.moveCallback(parseInt(This.$child.css('top')), diffClientY<0?-1:1);
 				});
 			});
 
@@ -359,7 +365,7 @@
 			}
 		},
 		//滚动至 ['top'] ['bottom'] [int]
-		scrollTo: function(pos) {
+		scrollTo: function(pos, bool) {
 			if(pos == 'top') {
 				this.curPos = 0;
 			}
@@ -370,13 +376,23 @@
 				this.curPos = -pos;
 			}
 
-			this.$child.stop().animate({
-				top: this.curPos,
-			}, 300);
+			if(bool) {// css
+				this.$child.stop().css({
+					top: this.curPos,
+				}, 300);
 
-			this.$SC_frontCtn.stop().animate({
-				top: -this.curPos/this.ratio,
-			}, 300);
+				this.$SC_frontCtn.stop().css({
+					top: -this.curPos/this.ratio,
+				}, 300);
+			}else {// animate
+				this.$child.stop().animate({
+					top: this.curPos,
+				}, 300);
+
+				this.$SC_frontCtn.stop().animate({
+					top: -this.curPos/this.ratio,
+				}, 300);
+			}
 		},
 		
 	}
