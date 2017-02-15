@@ -1,7 +1,7 @@
 #### face说明文档
 
 * ###### demo示例
-	[http://rsz.douku.tv/jquery-plugins/face/demo.html](http://rsz.douku.tv/jquery-plugins/face/demo.html)
+	[http://v3.faqrobot.org/hvb/jquery-plugins/face/demo.html](http://v3.faqrobot.org/hvb/jquery-plugins/face/demo.html)
 
 * ###### 功能简介
 	1. 该 *demo* 供用户选择的表情有2种，用户也可以根据需求拓展自定义表情
