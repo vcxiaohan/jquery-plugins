@@ -1,0 +1,29 @@
+/* jquery.autocomplete.css */
+
+
+.AU_outerCtn {
+    border-radius: 5px 5px 0 0;
+    background: #fff;
+    position: absolute;
+    border: 1px solid #d9d9d9;
+    box-shadow: 0 0 20px 0 rgba(0, 0, 0, .15);
+    z-index: 100000;
+    width: 100%;
+}
+
+.AU_innerCtn {
+    cursor: pointer;
+}
+
+.AU_innerCtn_focus {
+    background: #e3f8ff;
+}
+
+.AU_txt {
+    padding: 0 8px;
+    line-height: 26px;
+}
+
+.AU_replaceTip {
+    color: #f00;
+}

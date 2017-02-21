@@ -4,7 +4,9 @@
     <meta charset="UTF-8">  
     <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">  
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>  
+    <link rel="stylesheet" href="css/autocomplete.css" />
     <script src="../js/jquery-1.11.3.min.js"></script>  
+    <script src="../js/base.js"></script>  
     <script src="js/autocomplete.js"></script>  
     <title>demo</title>  
   
@@ -28,28 +30,15 @@
         .showCtn {
             width: 100%;
             height: 300px;
-            background: red;
+            outline: 1px solid #ddd;
         }
         .showCtn:after {
             clear: both;
         }
         .input {
-            width: 80%;
+            width: 100%;
             box-sizing: border-box;
             float: left;
-        }
-        .send {
-            float: left;
-            box-sizing: border-box;
-            display: inline-block;
-            width: 20%;
-        }
-        .explain {
-            float: left;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            margin-top: 20px;
-            padding: 10px;
         }
     </style>  
 </head>  
@@ -58,41 +47,29 @@
         <div class="demo">
             <div class="showCtn"></div>
             <div class="inputCtn">
-                <input class="input" type="text">
-                <span class="send">发送</span>
+                <input class="input" type="text" placeholder="输入数字1试试">
             </div>
-        </div>
-        <div class="explain">
-            <h3>demo解释</h3>
-            <p>1. 请打开 console 面板</p>
         </div>
     </div>
 </body>  
 <script>  
     ;$(function() {  
-        /* 请忽视这里 */
+        // 上线接口，请忽视
         $.ajax({
-            url: 'http://v3.faqrobot.org/servlet/AQ?s=p&sysNum=1000000',
-            dataType: 'jsonp',
-            success: function() {
-                autocomplete();
-            }
+            url: '/servlet/AQ?s=p&sysNum=14464304598886414'
         });
 
-        /* 调用插件 */
-        function autocomplete() {
-            $('.input').autocomplete({
-                prefix: 'http://v3.faqrobot.org/',//[string]
-                url: '../../servlet/AQ?s=ig',//[string]
-                jsonp: true,//是否跨域
-                targetEl: $('.inputCtn'),//参照物(用于appendTo和定位)
-                posAttr: ['0px', '100px'],//外边框的定位[left bottom]
-                itemNum: 10,//[int] 默认全部显示
-                callback: function(data) {//获取文本后的回调函数
-                    $('.send').trigger('click');
-                }
-            });
-        }
+        // 调用插件
+        $('.input').autocomplete({
+            prefix: '/',//[string]
+            url: 'servlet/AQ?s=ig',//[string]
+            targetEl: $('.inputCtn'),//参照物(用于appendTo和定位)
+            posAttr: ['0px', '0px'],//外边框的定位[left bottom]
+            itemNum: 10,//[int] 默认全部显示
+            callback: function(data) {//获取文本后的回调函数
+                $('.showCtn').append(data);
+            }
+        });
     });  
 </script>  
 </html>
