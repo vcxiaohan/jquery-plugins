@@ -98,7 +98,7 @@
 				    'border-radius: 5px;'+
 				'}'+
 				'.SC_frontClass:hover {/*可配置*/'+
-				    'background: rgba(255, 255, 255, 1);';+
+				    'background: rgba(255, 255, 255, 1);'+
 				'}'+
 				'.SC_select_no {'+
 				    '-moz-user-select: none;/*火狐*/'+
