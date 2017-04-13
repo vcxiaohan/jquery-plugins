@@ -2,7 +2,6 @@
 
 * ###### demo 示例
 	1. [http://v3.faqrobot.org/hvb/jquery-plugins/scrollbar/demo.html](http://v3.faqrobot.org/hvb/jquery-plugins/scrollbar/demo.html)
-	2. 嵌套使用时，有点问题，持续更新中
 
 * ###### 功能简介
 	1. 该插件需要配合 *jquery.mousewheel* 使用

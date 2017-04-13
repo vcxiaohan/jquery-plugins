@@ -146,6 +146,7 @@
 				This.$el[0].addEventListener('touchmove', function(e) {
 					clearInterval(touchTimer);
 					This.$SC_backCtn.add(This.$SC_frontCtn).fadeIn();
+					e.stopPropagation();//阻止页面滚动  
 					e.preventDefault();//阻止页面滚动  
 							  
 					var targetTouches = e.targetTouches[0];  
