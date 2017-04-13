@@ -45,7 +45,27 @@
         h3 {
             text-align: center;
         }
-        div .customBackClass {
+
+        /* 浏览器滚动条自定义样式 BEGIN */
+        body>.bodyBackClass {
+            width: 6px;
+            right: 0;
+            background: #000;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 20px;
+        }
+        .bodyFrontClass {
+            width: 6px;
+            height: 40px;
+            left: 0;
+            background: #fff;
+            background: rgba(255, 255, 255, 0.75);
+            border-radius: 20px;
+        }
+        /* 浏览器滚动条自定义样式 END */
+
+        /* demo2自定义样式 BEGIN */
+        div>.customBackClass {
             background: rgba(0,0,0,0.15);
             width: 2px;
             border-radius: 5px;
@@ -60,6 +80,8 @@
         .customFrontClass:hover {
             background: rgba(0,0,0,0.9);
         }
+        /* demo2自定义样式 END */
+
         .explain, .ctn {
             float: left;
             border: 1px solid #ccc;
@@ -122,10 +144,12 @@
                 </div>
             </div>
         </div>
-        <button class="add">所有demo增加内容</button>
-        <button class="toBottom">demo2滚动到底部</button>
-        <button class="to250">demo2滚动到250px</button>
-        <button class="autoScroll">demo2循环滚动</button>
+        <div class="explain">
+            <button class="add">所有demo增加内容</button>
+            <button class="toBottom">demo2滚动到底部</button>
+            <button class="to250">demo2滚动到250px</button>
+            <button class="autoScroll">demo2循环滚动</button>
+        </div>
         <div class="explain">
             <h3>demo解释</h3>
             <p>1. demo1 是最简单的调用示例</p>
@@ -143,6 +167,8 @@
 
         var bodyScrollbar = $('body').scrollbar({
             autoBottom: false,//内容改变，是否自动滚动到底部
+            backClass: 'bodyBackClass',
+            frontClass: 'bodyFrontClass',
         });  
         var aScrollbar = $('.aOuter').scrollbar({});  
         var bScrollbar = $('.bOuter').scrollbar({  
@@ -150,10 +176,10 @@
             frontClass: 'customFrontClass',
             autoBottom: false,//内容改变，是否自动滚动到底部
             moveCallback: function(top, direction) {//运动时事件回调
-                $('.ctn').append('<em class="green">---|---</em>运动', top, '当前top值为'+ top +'px', direction, direction==1?'向下滚':'向上滚');
+                $('.ctn').append('<em class="green">-|-</em>运动', top, '当前top值为'+ top +'px', direction, direction==1?'向下滚':'向上滚');
             },
             stopCallback: function(top, direction) {//停止时事件回调
-                $('.ctn').append('<em class="blue">---|---</em>停止', top, '当前top值为'+ top +'px', direction, direction==1?'向下滚':'向上滚');
+                $('.ctn').append('<em class="blue">-|-</em>停止', top, '当前top值为'+ top +'px', direction, direction==1?'向下滚':'向上滚');
             },
         });  
 
@@ -184,7 +210,7 @@
                 }else {
                     if(!window.hasRead) {
                         window.hasRead = !window.hasRead;
-                        $('.ctn').append('<em class="red">---|---</em>此页内容已浏览完毕，3s后加载下一页内容');
+                        $('.ctn').append('<em class="red">-|-</em>此页内容已浏览完毕，3s后加载下一页内容');
                         setTimeout(function() {
                             window.hasRead = !window.hasRead;
                             bScrollbar.scrollTo('top');
