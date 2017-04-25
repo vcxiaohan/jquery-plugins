@@ -107,7 +107,11 @@
 				    '-khtml-user-select: none;/*早期浏览器*/'+
 				    'user-select: none;'+
 				'}';
-			$('head').append('<style>'+ style +'</style>');
+
+			if(!$('[SC]')[0]) {
+				$('head').append('<style SC>'+ style +'</style>');
+			}
+
 			if(this.$el.css('position')=='static') {
 				this.$el.css('position', 'relative');
 			}

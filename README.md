@@ -15,3 +15,5 @@
 #### [输入框提示插件-input](https://github.com/vcxiaohan/jquery-plugins/tree/master/input)---[demo](http://v3.faqrobot.org/hvb/jquery-plugins/input/demo.html)---完成50%
 
 #### [滚动条插件-scrollbar](https://github.com/vcxiaohan/jquery-plugins/tree/master/scrollbar)---[demo](http://v3.faqrobot.org/hvb/jquery-plugins/scrollbar/demo.html)---完成100%
+
+#### [拖拽预览上传插件-h5Upload](https://github.com/vcxiaohan/jquery-plugins/tree/master/h5Upload)---[demo](http://v3.faqrobot.org/hvb/jquery-plugins/h5Upload/demo.html)---完成90%

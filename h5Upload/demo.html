@@ -1,0 +1,64 @@
+<!DOCTYPE html>      
+<html lang="en">      
+<head>      
+    <meta charset="UTF-8">      
+    <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no">      
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>      
+    <script src="../js/jquery-1.11.3.min.js"></script>  
+    <script src="js/h5Upload.js"></script>  
+    <title>demo</title>      
+      
+    <style>      
+        * {      
+            margin: 0;       
+            padding: 0;      
+        }      
+        body, html {      
+            width: 100%;      
+            height: 100%;      
+        }    
+        body {      
+            height: 3rem;      
+        }      
+        .msgCtn {
+            border: 1px solid red;
+            border-radius: 5px;
+            padding: 20px;
+        }
+    </style>      
+</head>      
+<body>      
+    <p>请尽量上传大一点的文件，方便查看过程(图片资源会自动显示预览图)</p>
+    <input type="file" class="file" multiple="multiple">    
+    <div class="msgCtn"></div> 
+</body>      
+<script>    
+    ;$(function() {    
+        // 上线接口，请忽略
+        $.ajax({
+            url: '/servlet/AQ?s=p&sysNum=14464304598886414'
+        })
+
+        // 调用示例
+        $('.file').h5Upload({
+            url: '/servlet/AQ?s=uf',// 上传接口，后台接口须支持接收多文件
+            maxNum: 10,// 单次最大上传数量
+            $trigger: $('.file'),// 触发上传的input 
+            //$drag: $('body'),// 触发上传的input 
+            startcall: function(ran) {// 开始上传时的回调
+                $('.msgCtn').append('<br>开始上传时的展示框唯一标识：'+ ran);
+            }, 
+            callback: function(data, ran) {// 上传结束后的回调
+                $('.msgCtn').append('<br>上传结束后的展示框唯一标识：'+ ran);
+                $('.msgCtn').append('<br>后台返回数据：'+ JSON.stringify(data));
+            }, 
+            type: 'png|jpg|mp3',// 允许上传的文件格式，如：gif|jpeg|bmp|jpg|png 为空时不限制格式
+            typecall: function(noSuit) {// 不符合文件类型时的回调
+                if(noSuit[0]) {
+                    $('.msgCtn').append(noSuit.length +'个文件不符合图片类型，已忽略');
+                }
+            },
+        }) 
+    });   
+</script>    
+</html>
