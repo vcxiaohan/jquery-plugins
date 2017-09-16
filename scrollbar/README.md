@@ -1,7 +1,7 @@
 #### scrollbar 说明文档
 
 * ###### demo 示例
-	1. [http://v3.faqrobot.org/hvb/jquery-plugins/scrollbar/demo.html](http://v3.faqrobot.org/hvb/jquery-plugins/scrollbar/demo.html)
+	1. [http://demo.vcxiaohan.com/jquery-plugins/scrollbar/demo.html](http://demo.vcxiaohan.com/jquery-plugins/scrollbar/demo.html)
 
 * ###### 功能简介
 	1. 该插件需要配合 *jquery.mousewheel* 使用

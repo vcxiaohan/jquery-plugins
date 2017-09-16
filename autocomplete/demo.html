@@ -47,7 +47,7 @@
         <div class="demo">
             <div class="showCtn"></div>
             <div class="inputCtn">
-                <input class="input" type="text" placeholder="输入数字1试试">
+                <input class="input" type="text" placeholder="输入111试试">
             </div>
         </div>
     </div>
@@ -56,13 +56,15 @@
     ;$(function() {  
         // 上线接口，请忽视
         $.ajax({
-            url: '/servlet/AQ?s=p&sysNum=14464304598886414'
+            url: 'http://v3.faqrobot.org/servlet/AQ?s=p&sysNum=14464304598886414',
+            dataType: 'jsonp',
         });
 
         // 调用插件
         $('.input').autocomplete({
-            prefix: '/',//[string]
+            prefix: 'http://v3.faqrobot.org/',//[string]
             url: 'servlet/AQ?s=ig',//[string]
+            jsonp: true,//是否跨域
             targetEl: $('.inputCtn'),//参照物(用于appendTo和定位)
             posAttr: ['0px', '0px'],//外边框的定位[left bottom]
             itemNum: 10,//[int] 默认全部显示
